@@ -7,10 +7,19 @@ Pascal VOC 2012 Object Classification
 
 初始化分支
 ```bash
-$ git checkout -b jzy #这里创建自己的分支并 checkout 进去
+$ git checkout -b jzy # 这里创建自己的分支并 checkout 进去
 ```
 
-完成代码编写，准备更新时
+写代码之前，先更新一下自己的分支：
+
+```bash
+$ git checkout dev
+$ git pull # 更新 dev 分支
+$ git checkout jzy
+$ git rebase dev
+```
+
+完成代码编写，准备更新时：
 
 ```bash
 $ git status # git add 前最好检查一下
