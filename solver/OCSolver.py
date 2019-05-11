@@ -17,11 +17,14 @@ class OCSolver(BaseSolver):
         self.target = self.Tensor()
 
         self.records = {'train_loss_c': [],
-                'val_loss_c': [],
-                'mAP': [],
-                'mAcc': [],
-                'wAcc': []
-                }
+                        'train_loss_total': [],
+                        'val_loss_c': [],
+                        'val_loss_total': [],
+                        'mAP': [],
+                        'mAcc': [],
+                        'wAcc': [],
+                        'lr': []
+                        }
 
         self.netC = define_C(opt)
         self.print_network()
@@ -74,13 +77,28 @@ class OCSolver(BaseSolver):
         self.optimizer_C.zero_grad()
 
         output = self.netC(self.input_img)
+        if self.train_opt['loss_type'] != 'BCEWithLogits':
+            output = nn.Sigmoid()(output)
         loss = self.criterion_C(output, self.target)
 
         loss.backward()
         self.optimizer_C.step()
         self.netC.eval()
 
-        return {'loss_c': loss}
+        return {'loss_c': loss.item(), 'loss_total': loss.item()}
+
+    def test(self):
+        self.netC.eval()
+        with torch.no_grad():
+            output = self.netC(self.input_img)
+            if self.train_opt['loss_type'] != 'BCEWithLogits':
+                output = nn.Sigmoid()(output)
+            loss = self.criterion_C(output, self.target)
+            if self.train_opt['loss_type'] == 'BCEWithLogits':
+                output = nn.Sigmoid()(output)
+            self.predict = output
+            self.netC.train()
+        return {'loss_c': loss, 'loss_total': loss.item()}
 
     def save_checkpoint(self, epoch, step, is_best):
         """
@@ -130,10 +148,11 @@ class OCSolver(BaseSolver):
 
             if self.is_train:
                 checkpoint = torch.load(model_path)
-                load_func(checkpoint['state_dict'])
+                load_func(checkpoint['netC'])
 
                 # resume state
                 if self.opt['solver']['pretrain'] == 'resume':
+                    print('===> Resuming state')
                     self.cur_epoch = checkpoint['epoch'] + 1
                     self.cur_step = checkpoint['step'] + 1
                     self.optimizer_C.load_state_dict(checkpoint['optimizer_C'])
@@ -143,7 +162,7 @@ class OCSolver(BaseSolver):
             else:
                 checkpoint = torch.load(model_path)
                 if isinstance(checkpoint, dict):
-                    state_dict = checkpoint['state_dict']
+                    state_dict = checkpoint['netC']
                 elif isinstance(checkpoint, OrderedDict):
                     state_dict = checkpoint
                 else:
@@ -158,15 +177,17 @@ class OCSolver(BaseSolver):
 
     def get_current_log(self):
         log = OrderedDict()
+        log['step'] = self.cur_step
         log['epoch'] = self.cur_epoch
-        log['best_pred'] = self.best_pred
+        log['best_mAP'] = self.best_mAP
         log['best_epoch'] = self.best_epoch
         log['records'] = self.records
         return log
 
     def set_current_log(self, log):
+        self.cur_step = log['step']
         self.cur_epoch = log['epoch']
-        self.best_pred = log['best_pred']
+        self.best_mAP = log['best_mAP']
         self.best_epoch = log['best_epoch']
         self.records = log['records']
 

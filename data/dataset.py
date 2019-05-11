@@ -49,6 +49,9 @@ class PascalVOCDataset(Dataset):
         category_list = ["person", "bird", "cat", "cow", "dog", "horse", "sheep", "aeroplane", "bicycle", "boat", "bus", "car", "motorbike", "train", "bottle", "chair", "diningtable", "pottedplant", "sofa", "tvmonitor"]
         return_list = [category_list[i] for i in range(self.category_num) if label[i] > 0]
         return return_list
+    
+    def name(self):
+        return 'PascalVOC_' + self.opt['phase'] 
 
 class UnNormalize(object):
     def __init__(self, mean, std):

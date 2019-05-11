@@ -3,6 +3,8 @@ import os.path as osp
 from collections import OrderedDict
 import json
 
+from util import util
+
 def parse(opt_path, is_train=True):
     # remove comments starting with '//'
     json_str = ''
@@ -23,10 +25,20 @@ def parse(opt_path, is_train=True):
         opt['path']['checkpoint_dir'] = os.path.join(experiments_root, 'checkpoint')
         if opt['use_tb_logger']:
             opt['path']['tb_logger'] = os.path.join(opt['path']['root'], 'tb_logger', opt['name'])
+            
+        # create folders
+        if opt['solver']['pretrain'] != 'resume' and not 'debug' in opt['name']:
+            util.mkdir_and_rename(experiments_root)
+            if opt['use_tb_logger']:
+                util.mkdir_and_rename(opt['path']['tb_logger'])
+            util.mkdirs((path for key, path in opt['path'].items() if key != 'exp_root' and key != 'tb_logger_root'))
+            
     else:  # test
         results_root = os.path.join(opt['path']['root'], 'results', opt['name'])
         opt['path']['results_root'] = results_root
         opt['path']['log'] = results_root
+        if not 'debug' in opt['name']:
+            util.mkdir_and_rename(results_root)
 
 
     # network
