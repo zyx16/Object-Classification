@@ -45,7 +45,7 @@
     , "lr_steps": [10, 15, 18]
     , "lr_gamma": 0.5
     , "epoch": 20
-    , "balance_sample": true
+    , "balance_sample": false
     , "pretrain": "resume"
     , "pretrained_path": "./experiments/densenet161_object_classification/checkpoint/last_ckp.pth"
   }

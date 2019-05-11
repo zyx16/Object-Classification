@@ -40,32 +40,16 @@ def parse(opt_path, is_train=True):
         if not 'debug' in opt['name']:
             util.mkdir_and_rename(results_root)
 
-
-    # network
-
     # export CUDA_VISIBLE_DEVICES
     gpu_list = ','.join(str(x) for x in opt['gpu_ids'])
     os.environ['CUDA_VISIBLE_DEVICES'] = gpu_list
     print('export CUDA_VISIBLE_DEVICES=' + gpu_list)
-
+    
+    # save opt
+    with open(os.path.join(experiments_root, 'opt.json'), 'w') as f:
+        json.dump(opt, f, indent=4)
+        
     return dict_to_nonedict(opt)
-
-def check_resume(opt):
-    '''Check resume states and pretrain_model paths'''
-    if opt['path']['resume_state']:
-        if opt['path']['pretrain_model_G'] or opt['path']['pretrain_model_D']:
-            print('===> Warning pretrain_model path will be ignored when resuming training.')
-
-        state_idx = osp.basename(opt['path']['resume_state']).split('.')[0]
-        opt['path']['pretrain_model_G'] = osp.join(opt['path']['models'],
-                                                   '{}_G.pth'.format(state_idx))
-        print('===> Info Set [pretrain_model_G] to ' + opt['path']['pretrain_model_G'])
-        if 'gan' in opt['model']:
-            opt['path']['pretrain_model_D'] = osp.join(opt['path']['models'],
-                                                       '{}_D.pth'.format(state_idx))
-            print('===> Info Set [pretrain_model_D] to ' + opt['path']['pretrain_model_D'])
-
-
 
 
 class NoneDict(dict):
