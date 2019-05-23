@@ -15,8 +15,11 @@ def parse(opt_path, is_train=True):
     opt = json.loads(json_str, object_pairs_hook=OrderedDict)
 
     # datasets
-    for phase, dataset in opt['datasets'].items():
-        dataset['phase'] = phase
+    for name, dataset in opt['datasets'].items():
+        if opt['is_train']:
+            dataset['phase'] = name
+        else:
+            dataset['phase'] = 'test'
 
     # path
     if is_train:

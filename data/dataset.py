@@ -21,8 +21,7 @@ class PascalVOCDataset(Dataset):
                 transform_list.append(transforms.RandomHorizontalFlip())
         elif opt['phase'] == 'val' or opt['phase'] == 'test':
             transform_list.extend([
-                transforms.Resize(opt['input_size']),
-                transforms.CenterCrop(opt['input_size'])
+                transforms.Resize((opt['input_size'], opt['input_size']))
                 ])
         transform_list.extend([
             transforms.ToTensor(),
@@ -40,7 +39,7 @@ class PascalVOCDataset(Dataset):
         img = Image.open(get_full_path(self.root_path, info[0])).convert('RGB')
         target = torch.zeros(self.category_num)
         target[info[1]] = 1
-        return {'img': self.transform(img), 'label': target}
+        return {'img': self.transform(img), 'label': target, 'img_name': info[0]}
     
     def __len__(self):
         return len(self.info_list)

@@ -76,7 +76,7 @@ class OCSolver(BaseSolver):
         self.netC.train()
         self.optimizer_C.zero_grad()
 
-        output = self.netC(self.input_img)
+        output = self.netC(self.input_img, 0)
         if self.train_opt['loss_type'] != 'BCEWithLogits':
             output = nn.Sigmoid()(output)
         loss = self.criterion_C(output, self.target)
@@ -90,15 +90,16 @@ class OCSolver(BaseSolver):
     def test(self):
         self.netC.eval()
         with torch.no_grad():
-            output = self.netC(self.input_img)
+            output, heatmap_dict = self.netC(self.input_img, 1)
             if self.train_opt['loss_type'] != 'BCEWithLogits':
                 output = nn.Sigmoid()(output)
             loss = self.criterion_C(output, self.target)
             if self.train_opt['loss_type'] == 'BCEWithLogits':
                 output = nn.Sigmoid()(output)
             self.predict = output
+
             self.netC.train()
-        return {'loss_c': loss, 'loss_total': loss.item()}
+        return {'loss_c': loss, 'loss_total': loss.item()}, heatmap_dict
 
     def save_checkpoint(self, epoch, step, is_best):
         """
@@ -174,6 +175,20 @@ class OCSolver(BaseSolver):
 
     def update_learning_rate(self, epoch):
         self.scheduler.step(epoch)
+
+    def log_current_visual(self, img_name, tb_logger, current_step):
+        res_heatmaps = [
+             np.squeeze(x.cpu().numpy(), axis=0) for x in self.heatmaps
+        ]
+        heatmap_gt = np.squeeze(self.target.cpu().numpy(), axis=0)
+        img = np.squeeze(self.sample.cpu().numpy(), axis=0)
+        mean = np.reshape(np.array(self.opt['datasets']['train']['mean']), (3, 1, 1))
+        fig = utils.plot_heatmap_compare(res_heatmaps, heatmap_gt, img, mean)
+        tb_logger.add_figure(img_name, fig, global_step=current_step)
+        plt.close(fig)
+
+    def draw_bbox(self):
+        pass
 
     def get_current_log(self):
         log = OrderedDict()
