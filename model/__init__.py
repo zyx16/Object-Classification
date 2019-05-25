@@ -74,6 +74,8 @@ def define_C(opt):
 
     if which_model == 'densenet161':  # SRResNet
         netC = arch.densenet161(opt_net)
+    elif which_model == 'densenet161_gcn':
+        netC = arch.densenet161GCN(opt_net)
     else:
         raise NotImplementedError('Classifier model %s not recognized' % (which_model))
 

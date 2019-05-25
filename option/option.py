@@ -22,8 +22,8 @@ def parse(opt_path, is_train=True):
             dataset['phase'] = 'test'
 
     # path
+    experiments_root = os.path.join(opt['path']['root'], 'experiments', opt['name'])
     if is_train:
-        experiments_root = os.path.join(opt['path']['root'], 'experiments', opt['name'])
         opt['path']['exp_root'] = experiments_root
         opt['path']['checkpoint_dir'] = os.path.join(experiments_root, 'checkpoint')
         if opt['use_tb_logger']:

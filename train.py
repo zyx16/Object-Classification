@@ -116,16 +116,17 @@ def main():
         print('===> Validating...', )
         for iter, batch in enumerate(val_loader):
             solver.feed_data(batch)
-            iter_loss, heatmap_dict = solver.test()
+            iter_loss = solver.test()
             #import pdb;pdb.set_trace()
-            if iter<10:
-                img = batch['img'][0]
-                img_name = 'img'+str(iter)
-                plt.close('all')
-                fig = plt.figure(figsize = (8,10))
-                plt_heatmap(img_name, img, heatmap_dict)
-                #import pdb;pdb.set_trace()
-                #plt.show()
+            if opt['opt_heatmap']:
+                if iter<10:
+                    img = batch['img'][0]
+                    img_name = 'img'+str(iter)
+                    plt.close('all')
+                    fig = plt.figure(figsize = (8,10))
+                    plt_heatmap(img_name, img, heatmap_dict)
+                    #import pdb;pdb.set_trace()
+                    #plt.show()
             for k, v in iter_loss.items():
                 val_loss_dict[k].append(v)
             metric_meter.add(solver.predict, solver.target)

@@ -1,11 +1,15 @@
 import torch
 import torch.nn as nn
+from torch.nn import Parameter
+import torch.nn.functional as F
 import torchvision
 import torchvision.models as models
 import os
 import cv2
 import numpy as np
-
+from util.util import *
+import pickle
+import math
 
 global features_blobs
 def hook_feature(module, input, output):
@@ -51,10 +55,6 @@ def returnCAM(feature_conv, weight_softmax, idx, input_size=224):
     return output_cam
 
 class GraphConvolution(nn.Module):
-    """
-    Simple GCN layer, similar to https://arxiv.org/abs/1609.02907
-    """
-
     def __init__(self, in_features, out_features, bias=False):
         super(GraphConvolution, self).__init__()
         self.in_features = in_features
@@ -84,4 +84,45 @@ class GraphConvolution(nn.Module):
         return self.__class__.__name__ + ' (' \
                + str(self.in_features) + ' -> ' \
                + str(self.out_features) + ')'
+
+class densenet161GCN(nn.Module):
+    def __init__(self, opt):
+        super(densenet161GCN, self).__init__()
+        self.model_ft = models.densenet161(pretrained=True)
+        self.num_ftrs = self.model_ft.classifier.in_features
+        self.num_class = opt['num_class']
+
+        self.pooling = nn.MaxPool2d(7,7)
+        self.gc1 = GraphConvolution(opt['in_channel'],1024)
+        self.gc2 = GraphConvolution(1024,2208)
+        self.relu = nn.LeakyReLU(0.2)
+
+        _adj = gen_A(self.num_class, opt['t'], opt['adj_file'])
+        self.A = Parameter(torch.from_numpy(_adj).float().to(torch.device('cuda')))
+
+    def forward(self, x, opt_heatmap=False):
+        inp_name = '/home/stevetod/jzy/projects/Object-Classification/data/voc_glove_word2vec.pkl'
+        with open(inp_name,'rb') as f:
+            inp = pickle.load(f)
+        features = self.model_ft.features(x)
+        features = F.relu(features, inplace=True)
+        adj = gen_adj(self.A).detach()
+        if opt_heatmap:
+            pass
+            # TODO 
+        features = self.pooling(features)
+        features = features.view(features.size(0),features.size(1))
+        
+        #inp = inp[0]
+        inp = torch.from_numpy(inp).cuda()
+
+        #import pdb;pdb.set_trace()
+        x = self.gc1(inp, adj)
+        x = self.relu(x)
+        x = self.gc2(x, adj)
+        
+        x = x.transpose(0,1)
+        x = torch.matmul(features,x)
+        return x
+
 

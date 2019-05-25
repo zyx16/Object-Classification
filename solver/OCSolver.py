@@ -90,7 +90,7 @@ class OCSolver(BaseSolver):
     def test(self):
         self.netC.eval()
         with torch.no_grad():
-            output, heatmap_dict = self.netC(self.input_img, 1)
+            output = self.netC(self.input_img, 1)
             if self.train_opt['loss_type'] != 'BCEWithLogits':
                 output = nn.Sigmoid()(output)
             loss = self.criterion_C(output, self.target)
@@ -99,7 +99,7 @@ class OCSolver(BaseSolver):
             self.predict = output
 
             self.netC.train()
-        return {'loss_c': loss, 'loss_total': loss.item()}, heatmap_dict
+        return {'loss_c': loss, 'loss_total': loss.item()}
 
     def save_checkpoint(self, epoch, step, is_best):
         """

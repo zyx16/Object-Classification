@@ -5,7 +5,9 @@ import matplotlib.pyplot as plt
 from data.dataset import UnNormalize
 from PIL import Image
 from torchvision import transforms
+import torch
 import numpy as np
+import math
 def get_timestamp():
     return datetime.now().strftime('%y%m%d-%H%M%S')
 
@@ -44,8 +46,24 @@ def plt_heatmap(img_name, img, heatmap_dict):
         plt.imshow(img, alpha=0.8)
         plt.imshow(heatmap, alpha=0.3, cmap='hot')
     plt.savefig('/home/stevetod/jzy/projects/Object-Classification/result/figs/heatmap'+img_name+'.jpg')
-
         
+def gen_A(num_classes, t=0.4, adj_file='data/voc_adj.pkl'):
+    import pickle
+    result = pickle.load(open(adj_file, 'rb'))
+    _adj = result['adj']
+    _nums = result['nums']
+    _nums = _nums[:, np.newaxis]
+    _adj = _adj / _nums
+    _adj[_adj < t] = 0
+    _adj[_adj >= t] = 1
+    _adj = _adj * 0.25 / (_adj.sum(0) + 1e-6)
+    _adj = _adj + np.identity(num_classes, np.int)
+    return _adj
 
+def gen_adj(A):
+    D = torch.pow(A.sum(1).float(), -0.5)
+    D = torch.diag(D)
+    adj = torch.matmul(torch.matmul(A, D).t(), D)
+    return adj
 
 

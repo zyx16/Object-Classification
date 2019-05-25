@@ -15,13 +15,13 @@ def main():
         description='Train Super Resolution Models')
     parser.add_argument(
         '-opt', type=str, required=True, help='Path to options JSON file.')
-    opt = option.parse(parser.parse_args().opt)
+    opt = option.parse(parser.parse_args().opt,False)
     
     
     test_loader_dict = OrderedDict()
     for name, dataset_opt in opt['datasets'].items():
         test_set = create_dataset(dataset_opt)
-        test_loader_dict[name] = create_dataloader(val_set, dataset_opt)
+        test_loader_dict[name] = create_dataloader(test_set, dataset_opt)
         print('===> Test Dataset: %s   Number of images: [%d]' %
               (name, len(test_set)))
         
@@ -51,7 +51,9 @@ def main():
             "[%s] mAP: %.2f   mAcc: %.4f   wAcc: %.4f"
             % (name, metric_value['mAP'],
                metric_value['mAcc'], metric_value['wAcc']))
-        
+
     with open(os.path.join(opt['path']['results_root'], 'result.json'), 'w') as f:
         json.dump(result_dict, f, indent=4)
     
+if __name__ == '__main__':
+    main()
