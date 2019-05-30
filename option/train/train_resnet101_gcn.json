@@ -1,0 +1,66 @@
+{
+  "name": "resnet101_gcn_object_classification_no_balance"
+  , "use_tb_logger": true
+  , "mode": "oc"
+  , "is_train": true
+  , "gpu_ids": [3]
+
+  , "datasets": {
+    "train": {
+      "root_path": "/home/stevetod/jzy/dataset/PascalVOC/JPEGImages/"
+      , "info_path": "./data/train_anno.txt.bak"
+      , "mode": "oc"
+      , "MultiScaleCrop": true
+      , "resize_size": 512
+      , "input_size": 448
+      , "scale": [0.8, 1.0]
+      , "category_num": 20
+      , "use_flip": true
+      , "batch_size": 10
+      , "num_workers": 8
+    }
+    , "val": {
+      "root_path": "/home/stevetod/jzy/dataset/PascalVOC/JPEGImages/"
+      , "info_path": "./data/test_anno.txt"
+      , "mode": "oc"
+      , "batch_size": 24
+      , "num_workers": 8
+      , "input_size": 448
+      , "category_num": 20
+    }
+  }
+
+  , "path": {
+    "root": "./"
+    ,"inp":"./data/voc_glove_word2vec.pkl"
+  }
+
+  , "network_C": {
+    "which_model_C": "resnet101_gcn"
+    , "num_class": 20
+    , "adj_file": "./data/voc_adj.pkl"
+    , "inp_name": "./data/voc_glove_word2vec.pkl"
+    , "in_channel": 300
+    , "t":0.4
+    , "p":0.2
+  }
+
+  , "solver": {
+    "type": "ADAM"
+    , "save_step": 5
+    , "loss_type": "BCEWithLogits"
+    , "learning_rate": 1e-4
+    , "weight_decay": 1e-4
+    , "lr_scheme": "multisteplr"
+    , "lr_steps": [10, 20, 30]
+    , "lr_gamma": 0.5
+    , "epoch": 40
+    , "balance_sample": false
+    , "pretrain": false
+  }
+
+  , "logger": {
+      "print_freq": 20
+  }
+  , "opt_heatmap":false
+}

@@ -1,0 +1,65 @@
+{
+  "name": "densenet161_object_classification_balance_naive_transform_sp"
+  , "_comment": "ADAM optimizer, balance class weight, use resize and random crop, use SoftProposal"
+  , "use_tb_logger": true
+  , "mode": "oc"
+  , "is_train": true
+  , "gpu_ids": [3]
+
+  , "datasets": {
+    "train": {
+      "root_path": "/home/stevetod/jzy/dataset/PascalVOC/JPEGImages/"
+      , "info_path": "./data/train_anno.txt.bak"
+      , "mode": "oc"
+      , "resize_size": 256
+      , "input_size": 224
+      , "scale": [0.8, 1.0]
+      , "category_num": 20
+      , "use_flip": true
+      , "batch_size": 32
+      , "num_workers": 8
+    }
+    , "val": {
+      "root_path": "/home/stevetod/jzy/dataset/PascalVOC/JPEGImages/"
+      , "info_path": "./data/test_anno.txt"
+      , "mode": "oc"
+      , "input_size": 224
+      , "category_num": 20
+      , "batch_size": 96
+      , "num_workers": 8
+    }
+  }
+
+  , "path": {
+    "root": "./"
+  }
+
+  , "network_C": {
+    "which_model_C": "densenet161"
+    , "num_class": 20
+    , "sp": {
+      "N": 7
+      , "max_iter": 10
+      , "err_th": 1e-4
+    }
+  }
+
+  , "solver": {
+    "type": "ADAM"
+    , "save_step": 5
+    , "loss_type": "BCEWithLogits"
+    , "learning_rate": 1e-4
+    , "weight_decay": 1e-4
+    , "lr_scheme": "multisteplr"
+    , "lr_steps": [10, 15, 18]
+    , "lr_gamma": 0.5
+    , "epoch": 40
+    , "balance_sample": true
+    , "pretrain": "resume"
+    , "pretrained_path": "./experiments/densenet161_object_classification_balance_naive_transform_sp/checkpoint/last_ckp.pth"
+  }
+
+  , "logger": {
+      "print_freq": 20
+  }
+}

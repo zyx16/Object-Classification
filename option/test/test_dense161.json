@@ -1,0 +1,35 @@
+{
+  "name": "densenet161_object_classification"
+  , "use_tb_logger": false
+  , "mode": "oc"
+  , "is_train": false
+  , "gpu_ids": [0]
+
+  , "datasets": {
+    "test": {
+      "root_path": "/home/stevetod/jzy/dataset/PascalVOC/JPEGImages/"
+      , "info_path": "./data/test_anno.txt"
+      , "mode": "oc"
+      , "input_size": 224
+      , "category_num": 20
+    }
+  }
+
+  , "path": {
+    "root": "."
+  }
+
+  , "network_C": {
+    "which_model_C": "densenet161"
+    , "num_class": 20
+  }
+
+  , "solver": {
+    "pretrain": true
+    , "pretrained_path": "./experiments/densenet161_object_classification/checkpoint/last_ckp.pth"
+  }
+
+  , "logger": {
+      "print_freq": 20
+  }
+}

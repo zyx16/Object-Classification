@@ -1,0 +1,39 @@
+{
+  "name": "densenet161_object_classification_WSOD_HaS_valid"
+  , "use_tb_logger": false
+  , "mode": "wsod"
+  , "is_train": false
+  , "gpu_ids": [0]
+
+  , "datasets": {
+    "test": {
+      "root_path": "/home/stevetod/jzy/dataset/PascalVOC/JPEGImages/"
+      , "info_path": "./data/test_anno.txt"
+      , "mode": "oc"
+      , "input_size": 224
+      , "category_num": 20
+      , "batch_size": 100
+      , "num_workers": 8
+    }
+  }
+
+  , "path": {
+    "root": "."
+  }
+
+  , "network_C": {
+    "which_model_C": "densenet161"
+    , "num_class": 20
+  }
+
+  , "solver": {
+    "pretrain": true
+    , "pretrained_path": "./experiments/densenet161_object_classification_ADAM_balance_naive_transform_HaS_valid/checkpoint/best_ckp.pth"
+    , "bbox_th": [0.4, 0.45, 0.5, 0.55]
+    , "pred_th": 0.2
+  }
+
+  , "logger": {
+      "print_freq": 20
+  }
+}
