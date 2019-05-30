@@ -33,7 +33,7 @@ class MetricMeter(object):
     def value(self):
         mAcc = np.mean(self.true_array.astype(float) / self.total)
         wAcc = np.sum(self.true_array.astype(float) / self.total * self.cnt_array / np.sum(self.cnt_array))
-        mAP = self.mAPMeter.value()
+        mAP = self.mAPMeter.value().item()
         return {'mAcc': mAcc, 'wAcc': wAcc, 'mAP': mAP}
     
     def reset(self):

@@ -48,6 +48,9 @@ class OCSolver(BaseSolver):
             if optim_type == "ADAM":
                 self.optimizer_C = optim.Adam(self.netC.parameters(),
                         lr=self.train_opt['learning_rate'], weight_decay=weight_decay)
+            elif optim_type == "SGD":
+                self.optimizer_C = optim.SGD(self.netC.parameters(),
+                        lr=self.train_opt['learning_rate'], weight_decay=weight_decay)
             else:
                 raise NotImplementedError('Optimizer type %s not implemented!' % (optim_type))
 
@@ -91,14 +94,21 @@ class OCSolver(BaseSolver):
         self.netC.eval()
         with torch.no_grad():
             output = self.netC(self.input_img)
-            if self.train_opt['loss_type'] != 'BCEWithLogits':
-                output = nn.Sigmoid()(output)
-            loss = self.criterion_C(output, self.target)
-            if self.train_opt['loss_type'] == 'BCEWithLogits':
+            if self.is_train:
+                # no Sigmoid in last layer
+                if self.train_opt['loss_type'] != 'BCEWithLogits':
+                    output = nn.Sigmoid()(output)
+                loss = self.criterion_C(output, self.target)
+                # output probability
+                if self.train_opt['loss_type'] == 'BCEWithLogits':
+                    output = nn.Sigmoid()(output)
+            else:
                 output = nn.Sigmoid()(output)
             self.predict = output
             self.netC.train()
-        return {'loss_c': loss, 'loss_total': loss.item()}
+
+        if self.is_train:
+            return {'loss_c': loss, 'loss_total': loss.item()}
 
     def save_checkpoint(self, epoch, step, is_best):
         """

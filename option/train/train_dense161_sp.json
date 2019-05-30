@@ -1,6 +1,6 @@
 {
-  "name": "densenet161_object_classification_ADAM_balance_naive_transform"
-  , "_comment": "ADAM optimizer, balance class weight, use resize and random crop"
+  "name": "densenet161_object_classification_balance_naive_transform_sp"
+  , "_comment": "ADAM optimizer, balance class weight, use resize and random crop, use SoftProposal"
   , "use_tb_logger": true
   , "mode": "oc"
   , "is_train": true
@@ -37,6 +37,11 @@
   , "network_C": {
     "which_model_C": "densenet161"
     , "num_class": 20
+    , "sp": {
+      "N": 7
+      , "max_iter": 10
+      , "err_th": 1e-4
+    }
   }
 
   , "solver": {
@@ -48,10 +53,10 @@
     , "lr_scheme": "multisteplr"
     , "lr_steps": [10, 15, 18]
     , "lr_gamma": 0.5
-    , "epoch": 20
+    , "epoch": 40
     , "balance_sample": true
-    , "pretrain": false
-    //, "pretrained_path": "./experiments/densenet161_object_classification_ADAM_balance/checkpoint/last_ckp.pth"
+    , "pretrain": "resume"
+    , "pretrained_path": "./experiments/densenet161_object_classification_balance_naive_transform_sp/checkpoint/last_ckp.pth"
   }
 
   , "logger": {

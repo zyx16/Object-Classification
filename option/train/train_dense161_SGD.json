@@ -1,17 +1,15 @@
 {
-  "name": "densenet161_object_classification_ADAM_balance_naive_transform"
-  , "_comment": "ADAM optimizer, balance class weight, use resize and random crop"
+  "name": "densenet161_object_classification_SGD"
   , "use_tb_logger": true
   , "mode": "oc"
   , "is_train": true
-  , "gpu_ids": [3]
+  , "gpu_ids": [2]
 
   , "datasets": {
     "train": {
       "root_path": "/home/stevetod/jzy/dataset/PascalVOC/JPEGImages/"
-      , "info_path": "./data/train_anno.txt.bak"
+      , "info_path": "./data/train_anno.txt"
       , "mode": "oc"
-      , "resize_size": 256
       , "input_size": 224
       , "scale": [0.8, 1.0]
       , "category_num": 20
@@ -21,12 +19,10 @@
     }
     , "val": {
       "root_path": "/home/stevetod/jzy/dataset/PascalVOC/JPEGImages/"
-      , "info_path": "./data/test_anno.txt"
+      , "info_path": "./data/val_anno.txt"
       , "mode": "oc"
       , "input_size": 224
       , "category_num": 20
-      , "batch_size": 96
-      , "num_workers": 8
     }
   }
 
@@ -40,18 +36,17 @@
   }
 
   , "solver": {
-    "type": "ADAM"
+    "type": "SGD"
     , "save_step": 5
     , "loss_type": "BCEWithLogits"
-    , "learning_rate": 1e-4
+    , "learning_rate": 1e-3
     , "weight_decay": 1e-4
     , "lr_scheme": "multisteplr"
     , "lr_steps": [10, 15, 18]
     , "lr_gamma": 0.5
     , "epoch": 20
-    , "balance_sample": true
+    , "balance_sample": false
     , "pretrain": false
-    //, "pretrained_path": "./experiments/densenet161_object_classification_ADAM_balance/checkpoint/last_ckp.pth"
   }
 
   , "logger": {

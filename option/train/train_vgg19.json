@@ -1,6 +1,6 @@
 {
-  "name": "densenet161_object_classification_ADAM_balance_naive_transform"
-  , "_comment": "ADAM optimizer, balance class weight, use resize and random crop"
+  "name": "vgg19_object_classification_ADAM_balance"
+  , "_comment": "ADAM optimizer, balance class weight"
   , "use_tb_logger": true
   , "mode": "oc"
   , "is_train": true
@@ -11,12 +11,11 @@
       "root_path": "/home/stevetod/jzy/dataset/PascalVOC/JPEGImages/"
       , "info_path": "./data/train_anno.txt.bak"
       , "mode": "oc"
-      , "resize_size": 256
       , "input_size": 224
       , "scale": [0.8, 1.0]
       , "category_num": 20
       , "use_flip": true
-      , "batch_size": 32
+      , "batch_size": 60
       , "num_workers": 8
     }
     , "val": {
@@ -25,8 +24,6 @@
       , "mode": "oc"
       , "input_size": 224
       , "category_num": 20
-      , "batch_size": 96
-      , "num_workers": 8
     }
   }
 
@@ -35,7 +32,7 @@
   }
 
   , "network_C": {
-    "which_model_C": "densenet161"
+    "which_model_C": "vgg19"
     , "num_class": 20
   }
 
@@ -50,8 +47,7 @@
     , "lr_gamma": 0.5
     , "epoch": 20
     , "balance_sample": true
-    , "pretrain": false
-    //, "pretrained_path": "./experiments/densenet161_object_classification_ADAM_balance/checkpoint/last_ckp.pth"
+    , "pretrain": false 
   }
 
   , "logger": {

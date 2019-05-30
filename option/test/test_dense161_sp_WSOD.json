@@ -1,0 +1,45 @@
+{
+  "name": "densenet161_object_classification_balance_naive_transform_sp"
+  , "_comment": "ADAM optimizer, balance class weight, use resize and random crop, use SoftProposal"
+  , "use_tb_logger": false
+  , "mode": "wsod"
+  , "is_train": false
+  , "gpu_ids": [3]
+
+  , "datasets": {
+    "test": {
+      "root_path": "/home/stevetod/jzy/dataset/PascalVOC/JPEGImages/"
+      , "info_path": "./data/test_anno.txt"
+      , "mode": "oc"
+      , "input_size": 224
+      , "category_num": 20
+      , "batch_size": 100
+      , "num_workers": 8
+    }
+  }
+
+  , "path": {
+    "root": "./"
+  }
+
+  , "network_C": {
+    "which_model_C": "densenet161"
+    , "num_class": 20
+    , "sp": {
+      "N": 7
+      , "max_iter": 10
+      , "err_th": 1e-4
+    }
+  }
+
+  , "solver": {
+    "pretrain": true
+    , "pretrained_path": "./experiments/densenet161_object_classification_balance_naive_transform_sp/checkpoint/best_ckp.pth"
+    , "bbox_th": [0.4, 0.5, 0.6, 0.7]
+    , "pred_th": 0.2
+  }
+
+  , "logger": {
+      "print_freq": 20
+  }
+}

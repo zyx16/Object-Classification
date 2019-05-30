@@ -1,10 +1,10 @@
 {
-  "name": "densenet161_object_classification_ADAM_balance_naive_transform"
-  , "_comment": "ADAM optimizer, balance class weight, use resize and random crop"
+  "name": "densenet161_object_classification_ADAM_balance_naive_transform_HaS_valid"
+  , "_comment": "ADAM optimizer, balance class weight, use resize and random crop, use HaS correctly"
   , "use_tb_logger": true
   , "mode": "oc"
   , "is_train": true
-  , "gpu_ids": [3]
+  , "gpu_ids": [4]
 
   , "datasets": {
     "train": {
@@ -18,6 +18,10 @@
       , "use_flip": true
       , "batch_size": 32
       , "num_workers": 8
+      , "HaS": {
+        "S": 4
+        , "p": 0.5
+      }
     }
     , "val": {
       "root_path": "/home/stevetod/jzy/dataset/PascalVOC/JPEGImages/"

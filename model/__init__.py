@@ -72,8 +72,16 @@ def define_C(opt):
     opt_net = opt['network_C']
     which_model = opt_net['which_model_C']
 
-    if which_model == 'densenet161':  # SRResNet
+    if which_model == 'densenet161':
         netC = arch.densenet161(opt_net)
+    elif which_model == 'vgg19':
+        netC = arch.vgg19(opt_net)
+    elif which_model == 'densenet201':
+        netC = arch.densenet201(opt_net)
+    elif which_model == 'densenet161_gcn':
+        netC = arch.densenet161GCN(opt_net)
+    elif which_model == 'resnet101_gcn':
+        netC = arch.resnet101GCN(opt_net)
     else:
         raise NotImplementedError('Classifier model %s not recognized' % (which_model))
 
