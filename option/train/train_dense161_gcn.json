@@ -1,9 +1,9 @@
 {
-  "name": "densenet161_gcn_object_classification_no_balance"
+  "name": "densenet161_gcn_object_classification_no_balance_lalal"
   , "use_tb_logger": true
   , "mode": "oc"
   , "is_train": true
-  , "gpu_ids": [2]
+  , "gpu_ids": [0]
 
   , "datasets": {
     "train": {
@@ -31,7 +31,6 @@
 
   , "path": {
     "root": "./"
-    ,"inp":"./data/voc_glove_word2vec.pkl"
   }
 
   , "network_C": {

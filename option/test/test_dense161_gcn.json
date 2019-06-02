@@ -1,0 +1,38 @@
+{
+  "name": "densenet161_gcn_object_classification"
+  , "use_tb_logger": false
+  , "mode": "oc"
+  , "is_train": false
+  , "gpu_ids": [0]
+
+  , "datasets": {
+    "test": {
+      "root_path": "/home/stevetod/jzy/dataset/PascalVOC/JPEGImages/"
+      , "info_path": "./data/test_anno.txt"
+      , "mode": "oc"
+      , "input_size": 448
+      , "category_num": 20
+      , "batch_size": 24
+      , "num_workers": 8
+    }
+  }
+
+  , "path": {
+    "root": "./"
+  }
+
+  , "network_C": {
+    "which_model_C": "densenet161_gcn"
+    , "num_class": 20
+    , "adj_file": "./data/voc_adj.pkl"
+    , "inp_name": "./data/voc_glove_word2vec.pkl"
+    , "in_channel": 300
+    , "t":0.4
+    , "p":0.2
+  }
+
+  , "solver": {
+    "pretrain": true
+    , "pretrained_path": "./experiments/best_ckp.pth"
+  }
+}

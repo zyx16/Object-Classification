@@ -92,8 +92,8 @@ class densenet161GCN(nn.Module):
         self.num_class = opt['num_class']
 
         self.pooling = nn.AdaptiveMaxPool2d(1)
-        self.gc1 = GraphConvolution(opt['in_channel'],1024)
-        self.gc2 = GraphConvolution(1024,2208)
+        self.gc1 = GraphConvolution(opt['in_channel'],1104)
+        self.gc2 = GraphConvolution(1104,2208)
         self.relu = nn.LeakyReLU(0.2)
 
         _adj = gen_A(self.num_class, opt['t'], opt['adj_file'])
