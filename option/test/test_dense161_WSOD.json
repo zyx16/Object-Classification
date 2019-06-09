@@ -28,8 +28,8 @@
 
   , "solver": {
     "pretrain": true
-    , "pretrained_path": "./experiments/densenet161_object_classification_ADAM_balance_naive_transform_HaS_valid/checkpoint/best_ckp.pth"
-    , "bbox_th": [0.4, 0.45, 0.5, 0.55]
+    , "pretrained_path": "./experiments/WSOD_best_ckp.pth"
+    , "bbox_th": [0.5]
     , "pred_th": 0.2
   }
 
