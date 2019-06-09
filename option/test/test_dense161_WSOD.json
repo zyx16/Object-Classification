@@ -28,7 +28,7 @@
 
   , "solver": {
     "pretrain": true
-    , "pretrained_path": "./experiments/WSOD_besk_ckp.pth"
+    , "pretrained_path": "./experiments/WSOD_best_ckp.pth"
     , "bbox_th": [0.5]
     , "pred_th": 0.2
   }

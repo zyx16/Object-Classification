@@ -254,11 +254,11 @@ VGG19 & 5.50 \% & 78.35 \%& 5.98 \% & 79.84 \% \\
 \end{itemize}
 
 \subsection{代码使用方法}
-从 \url{https://cloud.tsinghua.edu.cn/d/5f958eb2797c41a18dd4/} 下载 mAP\_best\_ckp.pth 和  \\WSOD\_besk\_ckp.pth 放在代码的 experiments 下，进入代码根目录，运行
+从 \url{https://cloud.tsinghua.edu.cn/d/5f958eb2797c41a18dd4/} 下载 mAP\_best\_ckp.pth 和  \\WSOD\_besk\_ckp.pth 放在代码的 experiments 下，进入代码根目录（必须是学堂里上传的代码，GitHub 上的代码里没有检测 mAP 的 ground truth 文件），运行
 
 \begin{minted}[linenos, frame=lines]{Python}
-python test.py -opt options/test/test_dense161_gcn.json # 多标签分类的测试
-python test_WSOD.py -opt options/test/test_dense161_WSOD.json # 弱监督物体检测的测试
+python test.py -opt option/test/test_dense161_gcn.json # 多标签分类的测试
+python test_WSOD.py -opt option/test/test_dense161_WSOD.json # 弱监督物体检测的测试
 \end{minted}
 
 即可进行测试，其他使用方法详见代码的 README.MD
