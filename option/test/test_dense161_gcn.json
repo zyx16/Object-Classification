@@ -33,6 +33,6 @@
 
   , "solver": {
     "pretrain": true
-    , "pretrained_path": "./experiments/best_ckp.pth"
+    , "pretrained_path": "./experiments/mAP_best_ckp.pth"
   }
 }
